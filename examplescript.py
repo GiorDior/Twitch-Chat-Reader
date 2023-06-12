@@ -5,7 +5,7 @@ import time
 reader = TwitchChatReader("Chess")
 
 # waiting 10 seconds for some messages to come 
-time.sleep(60)
+time.sleep(10)
 
 # finding all new messages that appeared
 reader.find_new_messages()
