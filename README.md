@@ -28,6 +28,7 @@ If there is no new message, only an empty list is returned.
 2. Creating a new instance of the class `TwitchChatReader`: `reader = TwitchChatReader(CHANNELNAME)
 3. Call `find_new_messages()` method to update the list of messages.
 4. Call `save_messages()` to save all messages that were found by the previous method.
+I provided examples of log files at [/logsamples/](https://github.com/GiorDior/Twitch-Chat-Reader/tree/main/logsamples).
 
 ### Note
 - Messages that cannot be decrypted by Python (unknown characters) are not stored anywhere in any way.
