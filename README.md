@@ -6,7 +6,7 @@ I thank all people who use this for their project. I love to contribute to the c
 
 ## Usage
 
-To use this, you need Python 3.7+ the [**Chrome browser**](https://www.google.com/intl/en_en/chrome/) and all of the required packages installed.
+To use this, you need Python 3.7+, the [**Chrome browser**](https://www.google.com/intl/en_en/chrome/) and all of the required packages installed.
 To install the required packages, run: 
 <br>`pip3 install selenium` or `pip3 install requirements.txt`
 
