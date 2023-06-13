@@ -1,4 +1,4 @@
-from tchatreader import TwitchChatReader
+from twitchchatreader import TwitchChatReader
 import time
 
 # creating a new obejct
