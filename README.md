@@ -17,19 +17,20 @@ To install the required packages, run:
 ### Printing messages to the console
 1. Import the script following the steps above
 2. Creating a new instance of the class `TwitchChatReader`: `reader = TwitchChatReader(CHANNELNAME)`
-3. To print messages, call the `print(find_new_messages())`
+3. To print messages, call the `print(reader.find_new_messages())`
 
 I provided an [example script](https://github.com/GiorDior/Twitch-Chat-Reader/blob/main/examplescript.py).
 Note: `find_new_messages()` returns a list of all new messages in this format: <br>`[AUTHOR, MESSAGE]`.
-If there is no new message, only an empty list is returned.
+If there is no new message, an empty list is returned.
 
 ### Saving messages to a txt file
 1. Import the script following the steps above
 2. Creating a new instance of the class `TwitchChatReader`: `reader = TwitchChatReader(CHANNELNAME)`
-3. Call `find_new_messages()` method to update the list of messages.
-4. Call `save_messages()` to save all messages that were found by the previous method.
+3. Call `reader.find_new_messages()` method to update the list of messages.
+4. Call `reader.save_messages()` to save all messages that were found by the previous method.
 <br> I provided examples of log files at [/logsamples/](https://github.com/GiorDior/Twitch-Chat-Reader/tree/main/logsamples).
 
 ### Note
 - Messages that cannot be decrypted by Python (unknown characters) are not stored anywhere in any way.
 - Messages that might have shown up but have been removed by the Twitch chat system (because they were too old) will not come up when `find_new_messages()` is called
+- `find_new_messages() finds all new messages (except the ones explained at the points above) that have appeared since last time the function has been called
