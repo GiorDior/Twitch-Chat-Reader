@@ -11,8 +11,8 @@ To install the required packages, run:
 <br>`pip3 install selenium` or `pip3 install requirements.txt`
 
 ### Importing the script
-1. Place `tchatreader.py` into your directory
-2. Import the `TwitchChatReader` class like this: `from tchatreader import TwitchChatReader`
+1. Place `twitchchatreader.py` into your directory
+2. Import the `TwitchChatReader` class like this: `from twitchchatreader import TwitchChatReader`
 
 ### Printing messages to the console
 1. Import the script following the steps above
