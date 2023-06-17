@@ -21,6 +21,8 @@ This script is based on events. This means that whenever an event is called, a f
 def on_connect(event: CommentEvent):
     print(event.user.name, "|", event.comment)
 ```
+Here is an [example script](https://github.com/GiorDior/Twitch-Chat-Reader/blob/main/examplescript.py).
+<br>
 Always make sure that:
 1. the decorator `@reader.on(event_name)` is added before the definition of the function 
 2. you have an event parameter in your function
