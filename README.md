@@ -18,7 +18,7 @@ To install the required packages, run:
 This script is based on events. This means that whenever an event is called, a function is executed. You have to define this function yourself at first. Here is an example:
 ```
 @reader.on("comment")
-def on_connect(event: CommentEvent):
+def on_comment(event: CommentEvent):
     print(event.user.name, "|", event.comment)
 ```
 Here is an [example script](https://github.com/GiorDior/Twitch-Chat-Reader/blob/main/examplescript.py).
