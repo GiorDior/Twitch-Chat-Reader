@@ -27,7 +27,7 @@ Always make sure that:
 1. the decorator `@reader.on(event_name)` is added before the definition of the function 
 2. you have an event parameter in your function
 
-event_name | description| functionality
+event_name | description | attributes
 --- | --- | ---
 `"connect"`| Called when the browser connects to the Twitch chat. | none
 `"comment"`| Called when a new comment is written in Twitch chat. | event.comment, event.user.name
