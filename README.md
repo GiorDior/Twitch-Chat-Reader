@@ -8,7 +8,7 @@ I thank all people who use this for their project. I love to contribute to the c
 
 To use this, you need Python 3.6+, the [**Chrome browser**](https://www.google.com/intl/en_en/chrome/) and all of the required packages installed.
 To install the required packages, run: 
-<br>`pip3 install selenium requests bs4` or `pip3 install requirements.txt`
+<br>`pip3 install selenium requests bs4` or `pip3 install -r requirements.txt`
 
 ### Importing the script
 1. Place `twitchchatreader.py` iand `twitchchatreaderevents.py` nto your directory
