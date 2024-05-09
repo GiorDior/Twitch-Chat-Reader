@@ -1,6 +1,14 @@
+# author: Giorgio
+# date: 09.05.2024
+# topic: Twitch-Chat-Reader
+# version: 1.1
+# repo: https://github.com/Giooorgiooo/Twitch-Chat-Reader
+
 import requests
-import threading
 import codecs
+from collections.abc import Callable
+from time import sleep
+from threading import Thread
 from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -8,11 +16,15 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.remote.webelement import WebElement
 from bs4 import BeautifulSoup
-from chatreaderevents import *
+
+from twitchchatreaderevents import CommentEvent, ConnectEvent
 
 class User:
     def __init__(self, name: str) -> None:
-        self.name = name
+        self.name: str = name
+    
+    def __str__(self) -> str:
+        return self.name
 
 class TwitchChatReader:
     def __init__(self, twitch_channel: str) -> None:
@@ -22,14 +34,13 @@ class TwitchChatReader:
         Args:
             twitch_channel (str): The name of the Twitch channel to read the chat from.
         """
-        self.twitch_channel = twitch_channel
+        self.twitch_channel: str = twitch_channel
         
         if not self._user_exists(self.twitch_channel):
-            print(f"Error: The Twitch user '{self.twitch_channel}' does not exist") 
-            exit()
+            raise ValueError(f"The Twitch user {self.twitch_channel} does not exist.") 
 
-        self.previous_message = None
-        self._connected = False
+        self.previous_message: WebElement = None
+        self._connected: bool = False
         self._connect_to_chat()
 
     def _can_encode(self, string: str) -> bool:
@@ -52,20 +63,18 @@ class TwitchChatReader:
         """
         Connects to the Twitch chat for the specified channel using Selenium web driver.
         """
-        self._driver = Chrome()
+        self._driver: Chrome = Chrome()
         self._driver.get(f"https://www.twitch.tv/{self.twitch_channel}/chat")
 
-        wait = WebDriverWait(self._driver, 30)
+        wait: WebDriverWait = WebDriverWait(self._driver, 30)
         wait.until(EC.presence_of_element_located((By.TAG_NAME, "body")))
-        self._connected = True
+        self._connected: bool = True
 
         # delete irrelevant content from the page
-        irrelevant_content = [".consent-banner", ".chat-input__textarea", ".chat-input__buttons-container"]
+        irrelevant_content: list[str] = [".consent-banner", ".chat-input__textarea", ".chat-input__buttons-container"]
         for content in irrelevant_content:
-            element = self._driver.find_element(By.CSS_SELECTOR, content)
+            element: WebElement = self._driver.find_element(By.CSS_SELECTOR, content)
             self._driver.execute_script("arguments[0].parentNode.removeChild(arguments[0]);", element)
-
-        # self._driver.execute_script("document.body.style.zoom='25%'")
 
     def _user_exists(self, user: str) -> bool:
         """
@@ -77,28 +86,29 @@ class TwitchChatReader:
         Returns:
             bool: True if the user exists, False otherwise.
         """
-        exists = False
-        url = f"https://www.twitch.tv/{user}"
+
+        exists: bool = False
+        url: str = f"https://www.twitch.tv/{user}"
         for i in range(10):
-            response = requests.get(url)
-            soup = BeautifulSoup(response.text, 'html.parser')
+            response: requests.Response = requests.get(url)
+            soup: BeautifulSoup = BeautifulSoup(response.text, 'html.parser')
             if user.lower() in soup.prettify().lower():
-                exists = True
+                exists: bool = True
         return exists
 
-    def _find_new_message(self) -> list[WebElement]:
+    def _find_new_messages(self) -> list[WebElement]:
         """
         Finds new chat messages that appeared since the last time this method was called.
 
         Returns:
             list: A list of new messages in the format [user, messagecontent].
         """
-        new_messages = []
-        chat_messages = self._driver.find_elements(By.CSS_SELECTOR, '.chat-line__message')
+        new_messages: list[WebElement] = []
+        chat_messages: list[WebElement] = self._driver.find_elements(By.CSS_SELECTOR, '.chat-line__message')
 
         if len(chat_messages) > 0:
-            def get_message_number(message):
-                return int(str(message).split("_")[-1].split('"')[0])
+            def get_message_number(message: WebElement):
+                return int(str(message.id).split(".")[-1])
 
             for message in chat_messages:
                 try:
@@ -107,13 +117,13 @@ class TwitchChatReader:
                         and not message.text == "" and self._can_encode(message.text):
                         # adding the new message
                         new_messages.append(message)
-                        self.previous_message = message
+                        self.previous_message: WebElement = message
                 except StaleElementReferenceException:
-                    chat_messages = self._driver.find_elements(By.CSS_SELECTOR, '.chat-line__message')
+                    chat_messages: list[WebElement] = self._driver.find_elements(By.CSS_SELECTOR, '.chat-line__message')
 
         return new_messages
 
-    def _comment_event_loop(self, func) -> None:
+    def _comment_event_loop(self, func: Callable) -> None:
         """
         Event loop for processing new comments.
 
@@ -121,14 +131,15 @@ class TwitchChatReader:
             func (function): The function to be executed for each new comment.
         """
         while True:
-            new_messages = self._find_new_message()
+            sleep(0.1)
+            new_messages: list[WebElement] = self._find_new_messages()
             for message in new_messages:
                 try:
                     CommentEvent(message, func)
                 except StaleElementReferenceException:
                     pass
 
-    def _connect_event_loop(self, func) -> None:
+    def _connect_event_loop(self, func: Callable) -> None:
         """
         Event loop for processing new comments.
 
@@ -152,9 +163,9 @@ class TwitchChatReader:
         """
         def wrapper(func):
             if event_name == "comment":
-                threading.Thread(target=self._comment_event_loop, args=(func,)).start()
+                Thread(target=self._comment_event_loop, args=(func,)).start()
             if event_name == "connect":
-                threading.Thread(target=self._connect_event_loop, args=(func,)).start()
+                Thread(target=self._connect_event_loop, args=(func,)).start()
             return func
 
         return wrapper

@@ -1,3 +1,9 @@
+# author: Giorgio
+# date: 09.05.2024
+# topic: Twitch-Chat-Reader
+# version: 1.1
+# repo: https://github.com/Giooorgiooo/Twitch-Chat-Reader
+
 import codecs
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -14,7 +20,7 @@ class CommentEvent:
             message (WebElement): The message element.
             func: the function that is called due to the event.
         """
-        from chatreader import User
+        from twitchchatreader import User
 
         self.user = User(self._get_user(message))
         self.comment = self._get_comment(message)
@@ -51,10 +57,7 @@ class CommentEvent:
         if ("\n" in message.text):
             irregular_text = message.text.replace("\n", "\\n")
             parts = irregular_text.split("\\n")
-            new_text = ""
-            for i, part in enumerate(parts):
-                if i != 0:
-                    new_text += part
+            new_text = "".join(parts[1:])
             user = new_text.split(": ")[0]
         else:
             user = message.text.split(": ")[0]
@@ -75,17 +78,10 @@ class CommentEvent:
         if ("\n" in message.text):
             irregular_text = message.text.replace("\n", "\\n")
             parts = irregular_text.split("\\n")
-            new_text = ""
-            for i, part in enumerate(parts):
-                if i != 0:
-                    new_text += part
-            message_text = new_text
+            message_text = "".join(parts[1:])
 
         parts = message_text.split(": ")
 
-        content = ""
-        for i, part in enumerate(parts):
-            if not i == 0:
-                content += part
+        content = "".join(parts[1:])
 
         return content
